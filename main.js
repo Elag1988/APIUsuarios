@@ -10,6 +10,8 @@ const port = 3000;
 
 //creacion de la constante connectDB
 
+const connectDB = '/api/users';
+
 //creacion de la constante userRoutes
 const userRoutes = require("./routes/userRoutes");
 
@@ -18,6 +20,6 @@ app.use(express.json());
 
 //ruta para acceso a la infornacion de la base de datos
 
-app.use('/users', userRoutes);
+app.use(connectDB, userRoutes);
 
 app.listen(port, () => {console.log("El servidor se ejecuta en http://localhost:" + port)})
