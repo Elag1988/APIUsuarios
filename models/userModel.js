@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const Uri = "Aqui va la url de mongo Altas o mongo local, una vez la colocas el programa funciona perfectamente";
+const Uri = "mongodb://127.0.0.1:27017/users";
 
 mongoose.connect(Uri, {
   useNewUrlParser: true,
@@ -15,7 +15,9 @@ const userSchema = new mongoose.Schema({
 
     username: {type:String, required:true},
     email: {type:String, required:true},
-    password: {type:String, required:true}
+    password: {type:String, required:true},
+    image: {type:String},
+    role: {type:String,default:"user"}
 }, {collection:"users25"});
 
 module.exports = mongoose.model('users25', userSchema);

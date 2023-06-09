@@ -8,9 +8,19 @@ exports.getAllUsers = (req, res) => {
     .catch((err) => res.status(500).json({ error: err.message }));
 };
 
+exports.getOneUser = (req, res) => {
+  const {email} = req.params;
+
+  userModel
+    .findOne({email})
+    .then((user) => res.json(user))
+    .catch((err) => res.status(500).json({error:err.message}));
+}
+
 exports.createUser = (req, res) => {
   const { username, email, password } = req.body;
   const saltRounds = 10;
+
   bcrypt.hash(password, saltRounds, function (err, hash) {
     if (err) {
       res.status(500).json({ error: err.message });
@@ -19,6 +29,7 @@ exports.createUser = (req, res) => {
         username,
         email,
         password: hash,
+        image:""
       });
 
       newUser
@@ -27,7 +38,8 @@ exports.createUser = (req, res) => {
         .catch((err) => res.status(500).json({ error: err.message }));
     }
   });
-};
+}
+
 
 // exports.updateUser = (req, res) => {
 //   const { id } = req.params;
@@ -44,6 +56,7 @@ exports.createUser = (req, res) => {
 exports.updateUser = (req, res) => {
   const { id } = req.params;
   const { username, email, password } = req.body;
+  const avatarFileName = req.file ? req.file.filename:null ;
   const saltRounds = 10;
 
   bcrypt.hash(password, saltRounds, function (err, hash) {
@@ -51,7 +64,7 @@ exports.updateUser = (req, res) => {
       res.status(500).json({ error: err.message });
     } else {
       userModel
-        .findByIdAndUpdate(id, { username, email, password: hash }, { new: true })
+        .findByIdAndUpdate(id, { username, email, password: hash, image:avatarFileName }, { new: true })
         .then((user) => {
           if (!user) throw new Error(`User with ID ${id} not found`);
           res.status(200).json({ user });
