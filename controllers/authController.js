@@ -2,10 +2,13 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/userModel");
 require("dotenv").config(); //otra manera de importar modulos
+const secret = process.env.JWT_SECRET;
 
 
 exports.authenticateUser = (req, res) => {
   const { email, password } = req.body;
+
+
   
   userModel.findOne({ email }).then((user) => {
     if (!user) {
@@ -24,9 +27,10 @@ exports.authenticateUser = (req, res) => {
             //Si coincide la contraseña , el usuario fue autentificado exitosamente
             const token = jwt.sign(
               payload,
-              process.env.JWT_SECRET,
+              secret,
               {expiresIn:"1h"});
             res.status(200).json({message:"Authentication was successful", token});
+            console.log("Clave secreta utilizada para firmar el token:", secret);
         } else {
             //Si no coincide la contraseña , el usuario no pudo ser autentificado.
             res.status(401).json({error:"Authentication failed "});

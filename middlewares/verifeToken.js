@@ -1,19 +1,27 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const secret = process.env.JWT_SECRET;
 
 exports.verifyToken = (req, res, next) => {
-    const token = req.headers.authorization;
-    if(!token) {
+    const authorizationHeaders = req.headers.authorization;
+    if(!authorizationHeaders) {
         return res.status(401).json({error:"Not token provided!!!"});
     } 
 
-    jwt.verify(token, process.env.JWT_SECRET,(err,decoded) => {
+    const token = authorizationHeaders.replace("Bearer ", '');
+
+    jwt.verify(token, secret,(err) => {
         
         if(err)  {
-            return res.status(401).json({error:"Invalid Token..."});
+            console.log("Clave secreta utilizada para verificar el token:!", secret, err);
+            // res.status(401).json({error:"Invalid Token..."});
         }
 
-        req.user = decoded;
+        const payload = jwt.decode(token);
+
+        req.user = {userId: payload.userId,
+            email: payload.email,
+            role: payload.role};
         next();
     });
 

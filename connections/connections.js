@@ -1,8 +1,13 @@
 const mongoose = require("mongoose");
+require('dotenv').config();
 
 exports.dbConnection = () => {
-    try{ mongoose.set(strictQuery, false)
-    mongoose.connect(process.env.DB_CONNECTION) 
-console.log("Se conecto con base de datos")}
-catch(e){console.log("Error de conexion con la base de datos", err)};
+    try{ 
+        mongoose.connect(process.env.DB_CONNECTION, {useNewUrlParser: true,
+            useUnifiedTopology: true}) 
+        console.log("Se conecto con base de datos");
+    }
+catch(err){
+    console.log("Error de conexion con la base de datos", err);
+};
 }
